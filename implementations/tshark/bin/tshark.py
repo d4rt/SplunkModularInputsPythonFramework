@@ -131,7 +131,29 @@ def do_run():
     except: 
         e = sys.exc_info()[1]
         logging.error("Looks like an error replacing environment variables: %s" % str(e))  
+# prints validation error data to be consumed by Splunk
+def print_validation_error(s):
+    print "<error><message>%s</message></error>" % xml.sax.saxutils.escape(s)
+    
+# prints XML stream
+def print_xml_single_instance_mode(s):
+    print "<stream><event><data>%s</data></event></stream>" % xml.sax.saxutils.escape(s)
+    
+# prints XML stream
+def print_xml_multi_instance_mode(s,stanza):
+    print "<stream><event stanza=""%s""><data>%s</data></event></stream>" % stanza,xml.sax.saxutils.escape(s)
+    
+# prints simple stream
+def print_simple(s):
+    print "%s\n" % s
+    
+def usage():
+    print "usage: %s [--scheme|--validate-arguments]"
+    logging.error("Incorrect Program Usage")
+    sys.exit(2)
 
+def do_scheme():
+    print SCHEME
 
  #read XML configuration passed from splunkd, need to refactor to support single instance mode
 def get_input_config():
