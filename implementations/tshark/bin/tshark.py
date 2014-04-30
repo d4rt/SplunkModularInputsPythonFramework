@@ -70,5 +70,27 @@ SCHEME = """<scheme>
 </scheme>
 """
 
+def do_validate():
+    
+    try:
+        config = get_validation_config() 
+        
+        tshark_command=config.get("tshark_command")
+        tshark_output=config.get("tshark_output")
+        tshark_filter=config.get("tshark_filter")
+        pcap_path=config.get("pcap_path")
+        
+        validationFailed = False
+    
+        if not tshark_command is None and which(tshark_command) is None:
+            print_validation_error("Command name "+tshark_command+" does not exist")
+            validationFailed = True
+        if validationFailed:
+            sys.exit(2)
+               
+    except RuntimeError,e:
+        logging.error("Looks like an error: %s" % str(e))
+        sys.exit(1)
+        raise   
 
 
