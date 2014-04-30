@@ -93,4 +93,44 @@ def do_validate():
         sys.exit(1)
         raise   
 
+## helper for command validation from command
 
+def which(program):
+
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
+def do_run():
+    config = get_input_config()
+    tshark_command=config.get("tshark_command")
+    tshark_output=config.get("tshark_output")
+    tshark_filter=config.get("tshark_filter")
+    pcap_path=config.get("pcap_path")
+
+    tshark_command_string = tshark_command
+    if tshark_filter:
+        tshark_command_string = tshark_command + " -R " + tshark_filter
+    
+    try:    
+        env_var_tokens = re.findall("\$(?:\w+)\$",tshark_command_string)
+        for token in env_var_tokens:
+            tshark_command_string = tshark_command_string.replace(token,os.environ.get(token[1:-1]))
+    except: 
+        e = sys.exc_info()[1]
+        logging.error("Looks like an error replacing environment variables: %s" % str(e))  
+
+
+  
