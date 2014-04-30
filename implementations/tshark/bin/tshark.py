@@ -131,6 +131,8 @@ def do_run():
     except: 
         e = sys.exc_info()[1]
         logging.error("Looks like an error replacing environment variables: %s" % str(e))  
+
+
 # prints validation error data to be consumed by Splunk
 def print_validation_error(s):
     print "<error><message>%s</message></error>" % xml.sax.saxutils.escape(s)
